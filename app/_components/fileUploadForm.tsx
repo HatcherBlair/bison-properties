@@ -2,6 +2,9 @@
 import { handleFileUpload } from "../fileActions";
 import { useFormState } from "react-dom";
 
+// Form for uploading file to S3
+// TODO: Add multi file support
+// TODO: Make form for entire property, not just file upload
 export default function FileUpload() {
   const [state, formAction] = useFormState(handleFileUpload, null);
 

@@ -1,16 +1,10 @@
 import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { NextRequest, NextResponse } from "next/server";
-
-const s3Client = new S3Client({
-  region: process.env.REGION,
-  credentials: {
-    accessKeyId: process.env.AWS_S3_ACCESS_KEY as string,
-    secretAccessKey: process.env.AWS_S3_SECRET_KEY as string,
-  },
-});
+import { s3Client } from "@/AWSComponents/s3Client";
 
 // Gets signed URL of image from S3
+// NOT NEEDED ANYMORE
 export async function GET(
   _: NextRequest,
   { params }: { params: { key: string } }

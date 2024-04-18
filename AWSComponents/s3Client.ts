@@ -1,3 +1,5 @@
+// Client used for S3 interactions throughout site
+// TODO: Split into 2 clients, one with full access and one with only GET access
 import { S3Client } from "@aws-sdk/client-s3";
 export const s3Client = new S3Client({
   region: process.env.REGION,
