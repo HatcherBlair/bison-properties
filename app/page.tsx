@@ -1,6 +1,7 @@
-import PropertyForm from "./_components/addPropertyForm";
-import FileUpload from "./_components/fileUploadForm";
-import PictureCarousel from "./_components/picturesCarousel";
+import PropertyForm from "@/components/addPropertyForm";
+import FileUpload from "@/components/fileUploadForm";
+import PictureCarousel from "@/components/picturesCarousel";
+import About from "@/components/aboutSection";
 
 // Images need to be on client I think
 // TODO: Make function in fileActions to return array of urls for Images
@@ -20,7 +21,8 @@ export default async function Home() {
   return (
     <div className="flex flex-col border-2 items-center">
       <h1 className="text-5xl p-5">Bison Properties</h1>
-      <PropertyForm />
+      <PictureCarousel />
+      <About />
     </div>
   );
 }

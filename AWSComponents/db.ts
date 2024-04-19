@@ -15,7 +15,7 @@ const dbClient = new DynamoDBClient({
     accessKeyId: process.env.AWS_DB_ACCESS_KEY as string,
     secretAccessKey: process.env.AWS_DB_SECRET_KEY as string,
   },
-  region: process.env.region,
+  region: process.env.REGION as string,
 });
 const docClient = DynamoDBDocumentClient.from(dbClient);
 
