@@ -1,5 +1,5 @@
 "use client";
-import { handleFileUpload } from "../fileActions";
+import { handleFileUpload } from "../../AWSComponents/s3Actions";
 import { useFormState } from "react-dom";
 
 // Form for uploading file to S3

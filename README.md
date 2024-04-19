@@ -1,12 +1,14 @@
 ## TODO:
 
 [ ] Build Homepage Template
-[ ] Fill navbar out
-[ ] Fill footer out
-[ ] Create DB schema
+[x] Build Picture Carousel
+[x] Create DB schema
 [ ] Create method to fetch one property from db
 [ ] Create method to fetch all active properties
 [ ] Create method to fetch all leased properties
+[ ] Create property Carousel - Consider merging with picture Carousel and making Carousel more generic
+[ ] Fill navbar out
+[ ] Fill footer out
 [ ] Create property form
 [ ] Create method to update property
 [ ] Implement userAuth for admin panel

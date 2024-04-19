@@ -6,7 +6,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
-import { fetchFiles } from "../fileActions";
+import { fetchFiles } from "../../AWSComponents/s3Actions";
 import Image from "next/image";
 import CustomImage from "./customImage";
 

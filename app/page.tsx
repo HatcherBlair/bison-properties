@@ -1,3 +1,4 @@
+import PropertyForm from "./_components/addPropertyForm";
 import FileUpload from "./_components/fileUploadForm";
 import PictureCarousel from "./_components/picturesCarousel";
 
@@ -19,7 +20,7 @@ export default async function Home() {
   return (
     <div className="flex flex-col border-2 items-center">
       <h1 className="text-5xl p-5">Bison Properties</h1>
-      <PictureCarousel />
+      <PropertyForm />
     </div>
   );
 }
