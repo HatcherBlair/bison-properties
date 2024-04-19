@@ -12,8 +12,8 @@ import {
 // TODO: Split into 2 clients, one with full access and one with only GET access
 const dbClient = new DynamoDBClient({
   credentials: {
-    accessKeyId: process.env.AWS_DB_ACCESS_KEY as string,
-    secretAccessKey: process.env.AWS_DB_SECRET_KEY as string,
+    accessKeyId: process.env.DYNAMODB_ACCESS_KEY as string,
+    secretAccessKey: process.env.DYNAMODB_SECRET_KEY as string,
   },
   region: process.env.REGION as string,
 });
