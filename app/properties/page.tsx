@@ -1,8 +1,9 @@
-import { scanTable } from "@/AWSComponents/db";
+import { scanTable } from "@/AWSComponents/dynamoActions";
 import { Property } from "@/types/Property";
 import PropertyCard from "@/components/propertyCard";
+import Link from "next/link";
 
-export default async function Home() {
+export default async function PropertyPage() {
   const response: any = await scanTable();
   const properties = response.map((res: any) => {
     if (!res.property) {
@@ -29,13 +30,9 @@ export default async function Home() {
     <>
       <p>Hello From properties</p>
       {filteredProperties.map((property: Property) => (
-        <PropertyCard
-          key={property.id}
-          name={property.name}
-          description={property.description}
-          price={property.price}
-          leased={property.leased}
-        />
+        <Link href={`/properties/${property.id}`} key={property.id}>
+          <PropertyCard property={property} />
+        </Link>
       ))}
     </>
   );

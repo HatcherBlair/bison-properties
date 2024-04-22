@@ -6,27 +6,19 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Property } from "@/types/Property";
 
-export default function PropertyCard({
-  name,
-  description,
-  price,
-  leased,
-}: {
-  name: string;
-  description: string;
-  price: number;
-  leased: boolean;
-}) {
+export default function PropertyCard({ property }: { property: Property }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{name}</CardTitle>
+        <CardTitle>{property.name}</CardTitle>
         <CardDescription>
-          ${price.toFixed(2)} /mo | {leased ? "Leased" : "Available"}
+          ${property.price.toFixed(2)} /mo |{" "}
+          {property.leased ? "Leased" : "Available"}
         </CardDescription>
       </CardHeader>
-      <CardContent>{description}</CardContent>
+      <CardContent>{property.description}</CardContent>
       <CardFooter>This is a footer</CardFooter>
     </Card>
   );
