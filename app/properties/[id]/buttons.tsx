@@ -10,6 +10,8 @@ export default function Buttons({ id }: { id: string }) {
     router.push("/properties");
   }
 
+  function handleUpdateClick() {}
+
   return (
     <div>
       <button className="border-2">Update Property Info</button>
