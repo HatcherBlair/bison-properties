@@ -1,5 +1,6 @@
 import { getProperty, deleteProperty } from "@/AWSComponents/dynamoActions";
 import { redirect } from "next/navigation";
+import { getSession } from "@auth0/nextjs-auth0";
 import Buttons from "./buttons";
 
 export default async function DetailPage({
@@ -12,6 +13,8 @@ export default async function DetailPage({
     return <h1>Error finding property</h1>;
   }
   const property = response.Item.property;
+
+  const session = await getSession();
 
   async function handleDeleteClick() {
     const response = await deleteProperty(property.id);
@@ -26,7 +29,7 @@ export default async function DetailPage({
       </h3>
       <p>{property.description}</p>
       <p>{property.numUnits}</p>
-      <Buttons id={property.id} />
+      {session ? <Buttons id={property.id} /> : <></>}
     </section>
   );
 }
