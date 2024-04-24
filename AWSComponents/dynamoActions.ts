@@ -7,6 +7,7 @@ import {
   PutCommand,
   ScanCommand,
 } from "@aws-sdk/lib-dynamodb";
+import { getPropertySchema } from "@/types/getPropertyValidator";
 
 // TODO: GetCommand for fetching one record
 // TODO: PutCommand for updating/adding record
@@ -33,6 +34,8 @@ export async function putProperty(property: Property) {
 }
 
 // Gets a single property from the table
+// TODO: Handle error fetching property
+// TODO: Use Zod to check status code
 export async function getProperty(id: string) {
   const command = new GetCommand({
     TableName: "test-table",
@@ -42,7 +45,10 @@ export async function getProperty(id: string) {
   });
 
   const response = await docClient.send(command);
-  return response;
+  const validatedResponse = getPropertySchema.safeParse(response);
+  return validatedResponse.success
+    ? validatedResponse.data.Item.property
+    : undefined;
 }
 
 // Delete a property from the table
