@@ -2,7 +2,7 @@ import { scanTable } from "@/AWSComponents/dynamoActions";
 import { Property } from "@/types/Property";
 import PropertyCard from "@/components/propertyCard";
 import Link from "next/link";
-import { getSession } from "@auth0/nextjs-auth0";
+import { getSession, withPageAuthRequired } from "@auth0/nextjs-auth0";
 
 export default async function PropertyPage() {
   const session = await getSession();

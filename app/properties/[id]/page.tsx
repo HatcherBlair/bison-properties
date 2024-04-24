@@ -2,30 +2,32 @@ import { getProperty, deleteProperty } from "@/AWSComponents/dynamoActions";
 import { redirect } from "next/navigation";
 import { getSession } from "@auth0/nextjs-auth0";
 import Buttons from "./buttons";
+import { propertySchema } from "@/types/Property";
 
 export default async function DetailPage({
   params,
 }: {
   params: { id: string };
 }) {
-  const property = await getProperty(params.id);
+  const unsafeProperty = await getProperty(params.id);
+  const property = propertySchema.safeParse(unsafeProperty);
+  if (!property.success) {
+    console.error(property.error);
+    redirect("/");
+  }
 
   const session = await getSession();
 
-  async function handleDeleteClick() {
-    const response = await deleteProperty(property.id);
-    redirect("/properties");
-  }
   return (
     <section>
-      <h1>Property Name: {property.name}</h1>
+      <h1>Property Name: {property.data.name}</h1>
       <h3>
-        {property.leased ? "Leased" : "Available"} | $
-        {property.price.toFixed(2)} / mo.
+        {property.data.leased ? "Leased" : "Available"} | $
+        {property.data.price.toFixed(2)} / mo.
       </h3>
-      <p>{property.description}</p>
-      <p>{property.numUnits}</p>
-      {session ? <Buttons id={property.id} /> : <></>}
+      <p>{property.data.description}</p>
+      <p>{property.data.numUnits}</p>
+      {session ? <Buttons id={property.data.id} /> : <></>}
     </section>
   );
 }
