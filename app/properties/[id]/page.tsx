@@ -8,11 +8,7 @@ export default async function DetailPage({
 }: {
   params: { id: string };
 }) {
-  const response = await getProperty(params.id);
-  if (!response.Item) {
-    return <h1>Error finding property</h1>;
-  }
-  const property = response.Item.property;
+  const property = await getProperty(params.id);
 
   const session = await getSession();
 

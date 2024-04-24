@@ -10,11 +10,15 @@ export default function Buttons({ id }: { id: string }) {
     router.push("/properties");
   }
 
-  function handleUpdateClick() {}
+  function handleUpdateClick() {
+    router.push(`/properties/${id}/edit`);
+  }
 
   return (
     <div>
-      <button className="border-2">Update Property Info</button>
+      <button className="border-2" onClick={handleUpdateClick}>
+        Update Property Info
+      </button>
       <button className="border-2" onClick={handleDeleteClick}>
         Delete Property
       </button>
