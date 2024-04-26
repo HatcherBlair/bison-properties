@@ -3,6 +3,7 @@ import { putProperty } from "@/AWSComponents/dynamoActions";
 import { Property } from "@/types/Property";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { formSchema } from "@/types/propertyFormValidator";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,21 +24,6 @@ import { useState } from "react";
 
 export default function PropertyForm({ property }: { property?: Property }) {
   const [pending, setPending] = useState(false);
-
-  // TODO: Photos - videos, floorPlan, images
-  const formSchema = z.object({
-    id: z.string().optional(),
-    name: z.string().min(2).max(50),
-    description: z.string().min(2).max(500),
-    price: z.coerce.number(),
-    leased: z.coerce.boolean(),
-    numUnits: z.coerce.number().int(),
-    addressLineOne: z.string(),
-    addressLineTwo: z.string().optional(),
-    city: z.string(),
-    state: z.string(),
-    zip: z.string(),
-  });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
