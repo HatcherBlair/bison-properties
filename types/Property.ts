@@ -18,7 +18,7 @@ export const propertySchema = z.object({
   city: z.string(),
   state: z.string(),
   zip: z.string(),
-  floorPlan: s3ObjectSchema.optional(),
+  floorPlan: z.array(s3ObjectSchema).optional(),
   photos: z.array(s3ObjectSchema).optional(),
   videos: z.array(s3ObjectSchema).optional(),
 });

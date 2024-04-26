@@ -1,4 +1,4 @@
-import { getProperty, deleteProperty } from "@/AWSComponents/dynamoActions";
+import { getProperty } from "@/AWSComponents/dynamoActions";
 import { redirect } from "next/navigation";
 import { getSession } from "@auth0/nextjs-auth0";
 import Buttons from "./buttons";
@@ -27,7 +27,7 @@ export default async function DetailPage({
       </h3>
       <p>{property.data.description}</p>
       <p>{property.data.numUnits}</p>
-      {session ? <Buttons id={property.data.id} /> : <></>}
+      {session && <Buttons id={property.data.id} />}
     </section>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 import { deleteProperty } from "@/AWSComponents/dynamoActions";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 export default function Buttons({ id }: { id: string }) {
   const router = useRouter();
@@ -14,14 +15,15 @@ export default function Buttons({ id }: { id: string }) {
     router.push(`/properties/${id}/edit`);
   }
 
+  function handleUpdatePicturesClick() {
+    router.push(`/properties/${id}/update-images`);
+  }
+
   return (
     <div>
-      <button className="border-2" onClick={handleUpdateClick}>
-        Update Property Info
-      </button>
-      <button className="border-2" onClick={handleDeleteClick}>
-        Delete Property
-      </button>
+      <Button onClick={handleUpdateClick}>Update Property Info</Button>
+      <Button onClick={handleDeleteClick}>Delete Property</Button>
+      <Button onClick={handleUpdatePicturesClick}>Update Pictures</Button>
     </div>
   );
 }

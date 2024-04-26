@@ -3,7 +3,7 @@ import { putProperty } from "@/AWSComponents/dynamoActions";
 import { Property } from "@/types/Property";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { formSchema } from "@/types/propertyFormValidator";
+import { propertySchema } from "@/types/Property";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,8 +25,8 @@ import { useState } from "react";
 export default function PropertyForm({ property }: { property?: Property }) {
   const [pending, setPending] = useState(false);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof propertySchema>>({
+    resolver: zodResolver(propertySchema),
     defaultValues: {
       id: property?.id || "",
       name: property?.name || "",
@@ -42,7 +42,7 @@ export default function PropertyForm({ property }: { property?: Property }) {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof propertySchema>) {
     setPending(true);
 
     try {
@@ -77,6 +77,7 @@ export default function PropertyForm({ property }: { property?: Property }) {
         <FormField
           control={form.control}
           name="id"
+          disabled
           render={({ field }) => (
             <FormItem className="">
               <FormLabel>Id</FormLabel>

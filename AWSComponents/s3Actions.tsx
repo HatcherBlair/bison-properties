@@ -8,14 +8,11 @@ import {
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { s3Client } from "@/AWSComponents/s3Client";
 
-// Uploads a file from form to s3 bucket
-// TODO: Add multi file support
-// TODO: Add rest of form for editing a property
-export async function handleFileUpload(currentState: any, formData: any) {
-  const file = formData.get("file");
-
-  const fileName = file?.name;
-  const fileType = file?.type;
+// Uploads a file to s3 : True if success | False if fail
+// TODO: Add proper error handling
+export async function handleFileUpload(file: File) {
+  const fileName = file.name;
+  const fileType = file.type;
 
   const binary = await file.arrayBuffer();
   const buffer = Buffer.from(binary);
@@ -30,10 +27,10 @@ export async function handleFileUpload(currentState: any, formData: any) {
   try {
     const upload = await s3Client.send(new PutObjectCommand(params));
     console.log(upload);
-    return { status: "success", message: `Uploaded: ${upload}` };
+    return true;
   } catch (e) {
     console.log(e);
-    return { status: "Error", message: e };
+    return false;
   }
 }
 
@@ -74,7 +71,7 @@ async function getURL(key: string): Promise<string> {
     new GetObjectCommand({
       Bucket: process.env.BUCKET_NAME as string,
       Key: key,
-    })
-    // { expiresIn: 60 * 60 * 1 }
+    }),
+    { expiresIn: 60 * 60 * 1 }
   ); // Default expiration 90s
 }
