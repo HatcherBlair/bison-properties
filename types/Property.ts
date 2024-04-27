@@ -2,8 +2,7 @@ import { z } from "zod";
 
 export const s3ObjectSchema = z.object({
   Key: z.string(),
-  type: z.enum(["video", "image", "floorPlan"]),
-  caption: z.string(),
+  caption: z.string().optional(),
 });
 
 export const propertySchema = z.object({

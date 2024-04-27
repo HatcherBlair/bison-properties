@@ -7,31 +7,64 @@ import {
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { s3Client } from "@/AWSComponents/s3Client";
+import { v4 as uuidV4 } from "uuid";
+import { s3Object } from "@/types/Property";
 
-// Uploads a file to s3 : True if success | False if fail
+// Uploads files to S3: returns the key for the file, if the key is Error the file was not able to be uploaded
 // TODO: Add proper error handling
-export async function handleFileUpload(file: File) {
-  const fileName = file.name;
-  const fileType = file.type;
+export async function handleFileUpload(data: FormData, propertyKey: string) {
+  // Validate file[1] contains size, type, name, lastModified, maybe parse with File type
 
-  const binary = await file.arrayBuffer();
-  const buffer = Buffer.from(binary);
+  const keys = await Promise.all(
+    Array.from(data.entries()).map(async ([key, value]) => {
+      const file = value as File;
+      const fileType = file.type;
+      const Key = uuidV4();
+      const binary = await file.arrayBuffer();
+      const buffer = Buffer.from(binary);
 
-  const params = {
-    Bucket: process.env.BUCKET_NAME,
-    Key: fileName,
-    Body: buffer,
-    ContentType: fileType,
-  };
+      const params = {
+        Bucket: process.env.BUCKET_NAME,
+        Key: `${propertyKey}/${Key}`,
+        Body: buffer,
+        ContentType: fileType,
+      };
 
-  try {
-    const upload = await s3Client.send(new PutObjectCommand(params));
-    console.log(upload);
-    return true;
-  } catch (e) {
-    console.log(e);
-    return false;
-  }
+      try {
+        const upload = await s3Client.send(new PutObjectCommand(params));
+        console.log(upload);
+        return { Key: Key };
+      } catch (e) {
+        console.log(e);
+        return { Key: "Error", file: file.name };
+      }
+    })
+  );
+
+  return keys;
+
+  // console.log(file);
+  // const fileType = file.type;
+  // const fileKey = uuidV4();
+
+  // const binary = await file.arrayBuffer();
+  // const buffer = Buffer.from(binary);
+
+  // const params = {
+  //   Bucket: process.env.BUCKET_NAME,
+  //   Key: `${propertyKey}/${fileKey}`,
+  //   Body: buffer,
+  //   ContentType: fileType,
+  // };
+
+  // try {
+  //   const upload = await s3Client.send(new PutObjectCommand(params));
+  //   console.log(upload);
+  //   return { Key: fileKey };
+  // } catch (e) {
+  //   console.log(e);
+  //   return { Key: "Error" };
+  // }
 }
 
 // Fetch specified number of images from S3 Bucket
