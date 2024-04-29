@@ -13,10 +13,10 @@
 [x] Implement userAuth for admin panel
 
 [ ] Add images to property detail page
-[ ] Add file upload to property detail page, in its own route
+[x] Add file upload to property detail page, in its own route
 [ ] Add file captions to update-images page
 [ ] Add multiselect for deleting photos
-[ ] Test video uploads to s3
+[x] Test video uploads to s3
 [ ] Style homepage
 [ ] Style property page
 [ ] Style details page
