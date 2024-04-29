@@ -28,7 +28,7 @@ export default function PropertyForm({ property }: { property?: Property }) {
   const form = useForm<z.infer<typeof propertySchema>>({
     resolver: zodResolver(propertySchema),
     defaultValues: {
-      id: property?.id || "",
+      id: property?.id || uuidv4(),
       name: property?.name || "",
       description: property?.description || "",
       leased: property?.leased || true,
@@ -47,7 +47,7 @@ export default function PropertyForm({ property }: { property?: Property }) {
 
     try {
       const submittedProperty: Property = {
-        id: values.id || uuidv4(),
+        id: values.id,
         name: values.name,
         description: values.description,
         price: values.price,
@@ -77,13 +77,13 @@ export default function PropertyForm({ property }: { property?: Property }) {
         <FormField
           control={form.control}
           name="id"
-          disabled
           render={({ field }) => (
             <FormItem className="">
               <FormLabel>Id</FormLabel>
               <FormControl>
                 <Input placeholder="" {...field} />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />

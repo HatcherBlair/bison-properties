@@ -7,6 +7,7 @@ import {
   PutCommand,
   ScanCommand,
 } from "@aws-sdk/lib-dynamodb";
+import { deleteFile } from "./s3Actions";
 import { getPropertySchema } from "@/types/getPropertyValidator";
 
 // TODO: GetCommand for fetching one record
@@ -53,6 +54,19 @@ export async function getProperty(id: string) {
 
 // Delete a property from the table
 export async function deleteProperty(id: string) {
+  // Delete photos from bucket before deleting property
+  const property = await getProperty(id);
+  // TODO: Maybe check if files are deleted instead just firing all these requests willy nilly
+  if (property?.photos) {
+    property.photos.forEach((file) => deleteFile(`${id}/${file.Key}`));
+  }
+  if (property?.floorPlan) {
+    property.floorPlan.forEach((file) => deleteFile(`${id}/${file.Key}`));
+  }
+  if (property?.videos) {
+    property.videos.forEach((file) => deleteFile(`${id}/${file.Key}`));
+  }
+
   const command = new DeleteCommand({
     TableName: "test-table",
     Key: {
