@@ -12,7 +12,7 @@
 [x] Create method to update property
 [x] Implement userAuth for admin panel
 
-[ ] Add images to property detail page
+[x] Add images to property detail page
 [x] Add file upload to property detail page, in its own route
 [ ] Add file captions to update-images page
 [ ] Add multiselect for deleting photos
