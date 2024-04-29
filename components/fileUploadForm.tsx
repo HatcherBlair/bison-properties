@@ -4,7 +4,7 @@ import { handleFileUpload } from "@/AWSComponents/s3Actions";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Property, propertySchema, s3Object } from "@/types/Property";
+import { Property, s3Object } from "@/types/Property";
 import { putProperty } from "@/AWSComponents/dynamoActions";
 import {
   Form,
@@ -81,6 +81,7 @@ export default function FileUpload({
     await putProperty(property);
 
     console.log(keys);
+    window.location.reload();
   }
 
   return (
