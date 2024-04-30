@@ -14,8 +14,8 @@
 
 [x] Add images to property detail page
 [x] Add file upload to property detail page, in its own route
-[ ] Add file captions to update-images page
-[ ] Add multiselect for deleting photos
+[ ] Add file captions to update-images page(on hold)
+[ ] Add multiselect for deleting photos(on hold)
 [x] Test video uploads to s3
 [ ] Style homepage
 [ ] Style property page
