@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import NavBar from "@/components/navbar";
-import { UserProvider } from "@auth0/nextjs-auth0/client";
+import { ClerkProvider } from "@clerk/nextjs";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -14,15 +14,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <UserProvider>
+    <ClerkProvider>
+      <html lang="en">
         <body className="place-items-center">
           <header>
             <NavBar />
           </header>
           <main className="width-2/3">{children}</main>
         </body>
-      </UserProvider>
-    </html>
+      </html>
+    </ClerkProvider>
   );
 }

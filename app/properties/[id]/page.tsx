@@ -1,11 +1,11 @@
 import { getProperty } from "@/AWSComponents/dynamoActions";
 import { getAllURLs } from "@/AWSComponents/s3Actions";
 import { redirect } from "next/navigation";
-import { getSession } from "@auth0/nextjs-auth0";
 import Buttons from "./buttons";
 import { propertySchema } from "@/types/Property";
 import DetailsCarousel from "@/components/detailsCarousel";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { auth } from "@clerk/nextjs/server";
 
 export default async function DetailPage({
   params,
@@ -21,10 +21,11 @@ export default async function DetailPage({
 
   const [floorPlanUrls, photoUrls, videoUrls] = await getAllURLs(property.data);
 
-  const session = await getSession();
+  const { userId } = auth();
 
   return (
     <section className="flex flex-col items-center justify-center">
+      {userId && <Buttons id={property.data.id} />}
       <h1>Property Name: {property.data.name}</h1>
       <Tabs defaultValue="photos" className="w-[800px]">
         <TabsList className="grid w-full grid-cols-3">
@@ -60,7 +61,6 @@ export default async function DetailPage({
       </h3>
       <p>{property.data.description}</p>
       <p>{property.data.numUnits}</p>
-      {session && <Buttons id={property.data.id} />}
     </section>
   );
 }

@@ -1,7 +1,7 @@
-import { withMiddlewareAuthRequired } from "@auth0/nextjs-auth0/edge";
+import { clerkMiddleware } from "@clerk/nextjs/server";
 
-export default withMiddlewareAuthRequired();
+export default clerkMiddleware();
 
 export const config = {
-  matcher: ["/properties/new", "/properties/:id/edit"],
+  matcher: ["/((?!.+.[w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
 };
