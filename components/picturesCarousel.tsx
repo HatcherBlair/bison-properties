@@ -7,7 +7,6 @@ import {
 } from "@/components/ui/carousel";
 import { fetchFiles } from "@/AWSComponents/s3Actions";
 import Image from "next/image";
-import CustomImage from "./customImage";
 
 // Main Carousel
 export default async function PictureCarousel() {
