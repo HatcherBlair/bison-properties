@@ -9,6 +9,7 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 import { deleteFile } from "./s3Actions";
 import { getPropertySchema } from "@/types/getPropertyValidator";
+import { revalidatePath } from "next/cache";
 
 // TODO: GetCommand for fetching one record
 // TODO: PutCommand for updating/adding record
@@ -32,6 +33,7 @@ export async function putProperty(property: Property) {
   } catch (e) {
     console.log(e);
   }
+  revalidatePath("/properties");
 }
 
 // Gets a single property from the table
@@ -76,6 +78,7 @@ export async function deleteProperty(id: string) {
 
   const response = await docClient.send(command);
   console.log(response);
+  revalidatePath("/properties");
   return response;
 }
 

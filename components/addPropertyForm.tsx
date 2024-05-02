@@ -21,9 +21,11 @@ import { RadioGroup } from "@radix-ui/react-radio-group";
 import { RadioGroupItem } from "@/components/ui/radio-group";
 import { v4 as uuidv4 } from "uuid";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function PropertyForm({ property }: { property?: Property }) {
   const [pending, setPending] = useState(false);
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof propertySchema>>({
     resolver: zodResolver(propertySchema),
@@ -63,7 +65,7 @@ export default function PropertyForm({ property }: { property?: Property }) {
       const response = await putProperty(submittedProperty);
 
       // TODO: Check response before redirection
-      window.location.href = "/properties";
+      router.replace("/properties");
     } catch (e) {
       console.log(e);
     } finally {

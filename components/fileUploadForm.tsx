@@ -80,7 +80,7 @@ export default function FileUpload({
     // TODO: Make toast that upload and db update were successful
     await putProperty(property);
 
-    console.log(keys);
+    // Maybe switch to revalidate but it was throwing errors
     window.location.reload();
   }
 
