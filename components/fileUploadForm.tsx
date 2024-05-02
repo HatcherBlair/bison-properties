@@ -29,7 +29,7 @@ export default function FileUpload({
 }) {
   // Form Validation
   const fileSchema = z.object({
-    files: z.instanceof(FileList),
+    files: window ? z.instanceof(FileList) : z.any(),
   });
   const form = useForm<z.infer<typeof fileSchema>>({
     resolver: zodResolver(fileSchema),
