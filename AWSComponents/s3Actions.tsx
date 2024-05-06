@@ -4,37 +4,44 @@ import {
   PutObjectCommand,
   ListObjectsCommand,
   GetObjectCommand,
+  DeleteObjectCommand,
+  DeleteObjectsCommand,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { s3Client } from "@/AWSComponents/s3Client";
+import { v4 as uuidV4 } from "uuid";
+import { Property, s3Object } from "@/types/Property";
 
-// Uploads a file from form to s3 bucket
-// TODO: Add multi file support
-// TODO: Add rest of form for editing a property
-export async function handleFileUpload(currentState: any, formData: any) {
-  const file = formData.get("file");
+// Uploads files to S3: returns the key for the file, if the key is Error the file was not able to be uploaded
+// TODO: Add proper error handling
+export async function handleFileUpload(data: FormData, propertyKey: string) {
+  const keys = await Promise.all(
+    Array.from(data.entries()).map(async ([key, value]) => {
+      const file = value as File;
+      const fileType = file.type;
+      const Key = uuidV4();
+      const binary = await file.arrayBuffer();
+      const buffer = Buffer.from(binary);
 
-  const fileName = file?.name;
-  const fileType = file?.type;
+      const params = {
+        Bucket: process.env.BUCKET_NAME,
+        Key: `${propertyKey}/${Key}`,
+        Body: buffer,
+        ContentType: fileType,
+      };
 
-  const binary = await file.arrayBuffer();
-  const buffer = Buffer.from(binary);
+      try {
+        const upload = await s3Client.send(new PutObjectCommand(params));
+        console.log(upload);
+        return { Key: Key };
+      } catch (e) {
+        console.log(e);
+        return { Key: "Error", file: file.name };
+      }
+    })
+  );
 
-  const params = {
-    Bucket: process.env.BUCKET_NAME,
-    Key: fileName,
-    Body: buffer,
-    ContentType: fileType,
-  };
-
-  try {
-    const upload = await s3Client.send(new PutObjectCommand(params));
-    console.log(upload);
-    return { status: "success", message: `Uploaded: ${upload}` };
-  } catch (e) {
-    console.log(e);
-    return { status: "Error", message: e };
-  }
+  return keys;
 }
 
 // Fetch specified number of images from S3 Bucket
@@ -64,17 +71,60 @@ export async function fetchFiles(numItems: number) {
   return urls;
 }
 
-// Fetch Specific Image
-export async function fetchFile(path: string) {}
-
 // Generates a presigned URL with given key
-async function getURL(key: string): Promise<string> {
-  return await getSignedUrl(
+export async function getURL(key: string): Promise<string> {
+  //console.log(key);
+  const response = await getSignedUrl(
     s3Client,
     new GetObjectCommand({
       Bucket: process.env.BUCKET_NAME as string,
       Key: key,
-    })
-    // { expiresIn: 60 * 60 * 1 }
+    }),
+    { expiresIn: 60 * 60 * 1 }
   ); // Default expiration 90s
+  //console.log(response);
+  return response;
+}
+
+// Returns all of the urls for a property
+export async function getAllURLs(property: Property) {
+  const floorPlanUrls = property.floorPlan
+    ? await Promise.all(
+        property.floorPlan.map(async (item: s3Object) => {
+          return await getURL(`${property.id}/${item.Key}`);
+        })
+      )
+    : [];
+
+  const photosUrls = property.photos
+    ? await Promise.all(
+        property.photos.map(async (item: s3Object) => {
+          return await getURL(`${property.id}/${item.Key}`);
+        })
+      )
+    : [];
+
+  const videosUrls = property.videos
+    ? await Promise.all(
+        property.videos.map(async (item: s3Object) => {
+          return await getURL(`${property.id}/${item.Key}`);
+        })
+      )
+    : [];
+
+  return [floorPlanUrls, photosUrls, videosUrls];
+}
+
+export async function deleteFile(path: string) {
+  const command = new DeleteObjectCommand({
+    Bucket: process.env.BUCKET_NAME as string,
+    Key: path,
+  });
+
+  try {
+    const response = await s3Client.send(command);
+    console.log(response);
+  } catch (e) {
+    console.error(e);
+  }
 }

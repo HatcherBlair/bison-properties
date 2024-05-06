@@ -1,8 +1,10 @@
-import { scanTable } from "@/AWSComponents/db";
+import { scanTable } from "@/AWSComponents/dynamoActions";
 import { Property } from "@/types/Property";
 import PropertyCard from "@/components/propertyCard";
+import Link from "next/link";
+import { auth } from "@clerk/nextjs/server";
 
-export default async function Home() {
+export default async function PropertyPage() {
   const response: any = await scanTable();
   const properties = response.map((res: any) => {
     if (!res.property) {
@@ -25,17 +27,17 @@ export default async function Home() {
     return property;
   });
   const filteredProperties = properties.filter(Boolean);
+
+  const { userId } = auth();
+
   return (
     <>
       <p>Hello From properties</p>
+      {userId && <Link href="/properties/new">New Property</Link>}
       {filteredProperties.map((property: Property) => (
-        <PropertyCard
-          key={property.id}
-          name={property.name}
-          description={property.description}
-          price={property.price}
-          leased={property.leased}
-        />
+        <Link href={`/properties/${property.id}`} key={property.id}>
+          <PropertyCard property={property} />
+        </Link>
       ))}
     </>
   );

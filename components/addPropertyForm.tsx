@@ -3,6 +3,7 @@ import { putProperty } from "@/AWSComponents/dynamoActions";
 import { Property } from "@/types/Property";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { propertySchema } from "@/types/Property";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,73 +20,73 @@ import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup } from "@radix-ui/react-radio-group";
 import { RadioGroupItem } from "@/components/ui/radio-group";
 import { v4 as uuidv4 } from "uuid";
+import { useState } from "react";
 
 export default function PropertyForm({ property }: { property?: Property }) {
-  // TODO: Photos - videos, floorPlan, images
-  const formSchema = z.object({
-    name: z.string().min(2).max(50),
-    description: z.string().min(2).max(500),
-    price: z.coerce.number(),
-    leased: z.coerce.boolean(),
-    numUnits: z.coerce.number().int(),
-    addressLineOne: z.string(),
-    addressLineTwo: z.string().optional(),
-    city: z.string(),
-    state: z.string(),
-    zip: z.string(),
-  });
+  const [pending, setPending] = useState(false);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof propertySchema>>({
+    resolver: zodResolver(propertySchema),
     defaultValues: {
-      name: "",
-      description: "",
-      leased: true,
-      price: 0.0,
-      numUnits: 1,
-      addressLineOne: "",
-      addressLineTwo: "",
-      city: "Salt Lake City",
-      state: "UT",
-      zip: "",
+      id: property?.id || uuidv4(),
+      name: property?.name || "",
+      description: property?.description || "",
+      leased: property?.leased || true,
+      price: property?.price || 0.0,
+      numUnits: property?.numUnits || 1,
+      addressLineOne: property?.addressLineOne || "",
+      addressLineTwo: property?.addressLineTwo || "",
+      city: property?.city || "Salt Lake City",
+      state: property?.state || "UT",
+      zip: property?.zip || "",
     },
   });
 
-  // If this form is being loaded from a property fill out the initial values
-  if (property) {
-    form.setValue("name", property.name);
-    form.setValue("description", property.description);
-    form.setValue("price", property.price);
-    form.setValue("leased", property.leased);
-    form.setValue("numUnits", property.numUnits);
-    form.setValue("addressLineOne", property.addressLineOne);
-    form.setValue("addressLineTwo", property.addressLineTwo);
-    form.setValue("city", property.city);
-    form.setValue("state", property.state);
-    form.setValue("zip", property.zip);
-  }
+  async function onSubmit(values: z.infer<typeof propertySchema>) {
+    setPending(true);
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    const submittedProperty: Property = {
-      id: uuidv4(),
-      name: values.name,
-      description: values.description,
-      price: values.price,
-      leased: values.leased,
-      numUnits: values.numUnits,
-      addressLineOne: values.addressLineOne,
-      addressLineTwo: values.addressLineTwo,
-      city: values.city,
-      state: values.state,
-      zip: values.zip,
-    };
+    try {
+      const submittedProperty: Property = {
+        id: values.id,
+        name: values.name,
+        description: values.description,
+        price: values.price,
+        leased: values.leased,
+        numUnits: values.numUnits,
+        addressLineOne: values.addressLineOne,
+        addressLineTwo: values.addressLineTwo,
+        city: values.city,
+        state: values.state,
+        zip: values.zip,
+      };
 
-    putProperty(submittedProperty);
+      const response = await putProperty(submittedProperty);
+
+      // TODO: Check response before redirection
+      window.location.href = "/properties";
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setPending(false);
+    }
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <FormField
+          control={form.control}
+          name="id"
+          render={({ field }) => (
+            <FormItem className="">
+              <FormLabel>Id</FormLabel>
+              <FormControl>
+                <Input placeholder="" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="name"
@@ -239,7 +240,13 @@ export default function PropertyForm({ property }: { property?: Property }) {
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+
+        <Button type="submit" disabled={pending}>
+          Submit
+        </Button>
+        <Button type="button" disabled={pending} onClick={() => history.back()}>
+          Cancel
+        </Button>
       </form>
     </Form>
   );

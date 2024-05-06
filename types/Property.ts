@@ -1,25 +1,29 @@
+import { z } from "zod";
+
+export const s3ObjectSchema = z.object({
+  Key: z.string(),
+  caption: z.string().optional(),
+});
+
+export const propertySchema = z.object({
+  id: z.string(),
+  name: z.string().min(2).max(50),
+  description: z.string().min(2),
+  price: z.coerce.number(),
+  leased: z.coerce.boolean(),
+  numUnits: z.coerce.number().int(),
+  addressLineOne: z.string(),
+  addressLineTwo: z.string().optional(),
+  city: z.string(),
+  state: z.string(),
+  zip: z.string(),
+  floorPlan: z.array(s3ObjectSchema).optional(),
+  photos: z.array(s3ObjectSchema).optional(),
+  videos: z.array(s3ObjectSchema).optional(),
+});
+
 // Defines the structure of a Property stored in DynamoDB
-export interface Property {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  leased: boolean;
-  numUnits: number;
-  addressLineOne: string;
-  addressLineTwo?: string;
-  city: string;
-  state: string;
-  zip: string;
-  floorPlan?: s3Object[];
-  photos?: s3Object[];
-  videos?: s3Object[];
-}
+export type Property = z.infer<typeof propertySchema>;
 
 // Defines the structure of a video or image
-// To retreive an object from S3 the path is Property.id/type/key
-export interface s3Object {
-  key: string;
-  type: "video" | "image" | "floorPlan";
-  caption: string;
-}
+export type s3Object = z.infer<typeof s3ObjectSchema>;

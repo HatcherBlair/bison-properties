@@ -1,5 +1,3 @@
-import PropertyForm from "@/components/addPropertyForm";
-import FileUpload from "@/components/fileUploadForm";
 import PictureCarousel from "@/components/picturesCarousel";
 import About from "@/components/aboutSection";
 
