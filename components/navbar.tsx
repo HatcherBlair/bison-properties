@@ -6,6 +6,7 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 import Link from "next/link";
+import { ModeToggle } from "./themeButton";
 
 export default async function NavBar() {
   return (
@@ -17,6 +18,7 @@ export default async function NavBar() {
       <SignedOut>
         <SignInButton />
       </SignedOut>
+      <ModeToggle />
 
       <Link href="/properties">Properties</Link>
     </nav>
