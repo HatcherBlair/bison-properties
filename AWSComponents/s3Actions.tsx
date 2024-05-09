@@ -11,6 +11,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { s3Client } from "@/AWSComponents/s3Client";
 import { v4 as uuidV4 } from "uuid";
 import { Property, s3Object } from "@/types/Property";
+import { revalidatePath } from "next/cache";
 
 // Uploads files to S3: returns the key for the file, if the key is Error the file was not able to be uploaded
 // TODO: Add proper error handling
@@ -41,6 +42,7 @@ export async function handleFileUpload(data: FormData, propertyKey: string) {
     })
   );
 
+  revalidatePath("/properties/[id]");
   return keys;
 }
 

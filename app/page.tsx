@@ -1,5 +1,6 @@
 import PictureCarousel from "@/components/picturesCarousel";
 import About from "@/components/aboutSection";
+import MaxWidthWrapper from "@/components/maxWidthWrapper";
 
 // Images need to be on client I think
 // TODO: Make function in fileActions to return array of urls for Images
@@ -17,10 +18,18 @@ export default async function Home() {
   // const srcArray = await images();
   // console.log(srcArray);
   return (
-    <div className="flex flex-col border-2 items-center">
-      <h1 className="text-5xl p-5">Bison Properties</h1>
-      <PictureCarousel />
-      <About />
+    <div>
+      <MaxWidthWrapper>
+        <h1 className="text-5xl text-center font-semibold p-16">
+          Bison Properties
+        </h1>
+      </MaxWidthWrapper>
+      <div className="w-full lg:aspect-[16/4] md:aspect-[16/6] aspect-[16/9] my-0 mx-0">
+        <PictureCarousel />
+      </div>
+      <MaxWidthWrapper>
+        <About />
+      </MaxWidthWrapper>
     </div>
   );
 }

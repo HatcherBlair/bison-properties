@@ -29,7 +29,7 @@ export default function FileUpload({
 }) {
   // Form Validation
   const fileSchema = z.object({
-    files: z.instanceof(FileList),
+    files: window ? z.instanceof(FileList) : z.any(),
   });
   const form = useForm<z.infer<typeof fileSchema>>({
     resolver: zodResolver(fileSchema),
@@ -80,7 +80,7 @@ export default function FileUpload({
     // TODO: Make toast that upload and db update were successful
     await putProperty(property);
 
-    console.log(keys);
+    // Maybe switch to revalidate but it was throwing errors
     window.location.reload();
   }
 
