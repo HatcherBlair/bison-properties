@@ -24,8 +24,8 @@ export default async function PropertyPage() {
         {userId && <Link href="/properties/new">New Property</Link>}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 justify-center items-center">
           {properties.map((property: Property) => (
-            <div className="w-400[px]">
-              <Link href={`/properties/${property.id}`} key={property.id}>
+            <div className="w-400[px]" key={property.id}>
+              <Link href={`/properties/${property.id}`}>
                 <PropertyCard property={property} />
               </Link>
             </div>
