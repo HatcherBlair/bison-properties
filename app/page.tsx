@@ -20,11 +20,14 @@ export default async function Home() {
   return (
     <div>
       <MaxWidthWrapper>
-        <h1 className="text-5xl p-5">Bison Properties</h1>
-        <div className="w-full aspect-[16/6] my-0 mx-0">
-          <PictureCarousel />
-        </div>
-
+        <h1 className="text-5xl text-center font-semibold p-16">
+          Bison Properties
+        </h1>
+      </MaxWidthWrapper>
+      <div className="w-full lg:aspect-[16/4] md:aspect-[16/6] aspect-[16/9] my-0 mx-0">
+        <PictureCarousel />
+      </div>
+      <MaxWidthWrapper>
         <About />
       </MaxWidthWrapper>
     </div>

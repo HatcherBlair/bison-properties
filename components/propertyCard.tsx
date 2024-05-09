@@ -6,20 +6,49 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Property } from "@/types/Property";
+import { type Property } from "@/types/Property";
+import { cn } from "@/lib/utils";
+import { getURL } from "@/AWSComponents/s3Actions";
 
-export default function PropertyCard({ property }: { property: Property }) {
+type CardProps = Omit<React.ComponentProps<typeof Card>, "property"> & {
+  property: Property;
+};
+
+export default async function PropertyCard({
+  property,
+  className,
+  ...props
+}: CardProps) {
+  const coverPhoto = property.photos?.length
+    ? await getURL(`${property.id}/${property.photos?.at(0)?.Key}`)
+    : null;
   return (
-    <Card>
+    <Card className={cn("w-[400px]", className)} {...props}>
       <CardHeader>
-        <CardTitle>{property.name}</CardTitle>
+        <CardTitle>
+          {property.addressLineOne} {property.addressLineTwo}
+        </CardTitle>
         <CardDescription>
-          ${property.price.toFixed(2)} /mo |{" "}
-          {property.leased ? "Leased" : "Available"}
+          {property.city}, {property.state} {property.zip}
         </CardDescription>
       </CardHeader>
-      <CardContent>{property.description}</CardContent>
-      <CardFooter>This is a footer</CardFooter>
+      <CardContent>
+        {coverPhoto ? (
+          <img className="w-[50px] h-auto object-cover" src={coverPhoto} />
+        ) : (
+          <div>No photo</div>
+        )}
+      </CardContent>
+      <CardFooter>
+        {property.leased ? "Leased" : "Available"} |
+        {property.price.toLocaleString("en-US", {
+          style: "currency",
+          currency: "USD",
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}{" "}
+        /mo
+      </CardFooter>
     </Card>
   );
 }

@@ -3,42 +3,35 @@ import { Property } from "@/types/Property";
 import PropertyCard from "@/components/propertyCard";
 import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
+import { scanTableSchema } from "@/types/getPropertyValidator";
+import MaxWidthWrapper from "@/components/maxWidthWrapper";
 
 export default async function PropertyPage() {
   const response: any = await scanTable();
-  const properties = response.map((res: any) => {
-    if (!res.property) {
-      return;
-    }
-
-    const property: Property = {
-      id: res.property.id,
-      name: res.property.name,
-      description: res.property.description,
-      price: res.property.price,
-      leased: res.property.leased,
-      numUnits: res.property.numUnits,
-      addressLineOne: res.property.addressLineOne,
-      addressLineTwo: res.property.addressLineTwo,
-      city: res.property.city,
-      state: res.property.state,
-      zip: res.property.zip,
-    };
-    return property;
-  });
-  const filteredProperties = properties.filter(Boolean);
+  console.log(scanTableSchema.safeParse(response));
+  const parsedProperties = scanTableSchema.safeParse(response);
+  if (!parsedProperties.success) {
+    throw new Error(parsedProperties.error.message);
+  }
+  const properties = parsedProperties.data.map((item) => item.property);
 
   const { userId } = auth();
 
   return (
     <>
-      <p>Hello From properties</p>
-      {userId && <Link href="/properties/new">New Property</Link>}
-      {filteredProperties.map((property: Property) => (
-        <Link href={`/properties/${property.id}`} key={property.id}>
-          <PropertyCard property={property} />
-        </Link>
-      ))}
+      <MaxWidthWrapper>
+        <p>Hello From properties</p>
+        {userId && <Link href="/properties/new">New Property</Link>}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 justify-center items-center">
+          {properties.map((property: Property) => (
+            <div className="w-400[px]">
+              <Link href={`/properties/${property.id}`} key={property.id}>
+                <PropertyCard property={property} />
+              </Link>
+            </div>
+          ))}
+        </div>
+      </MaxWidthWrapper>
     </>
   );
 }
