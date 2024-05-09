@@ -8,7 +8,6 @@ import MaxWidthWrapper from "@/components/maxWidthWrapper";
 
 export default async function PropertyPage() {
   const response: any = await scanTable();
-  console.log(scanTableSchema.safeParse(response));
   const parsedProperties = scanTableSchema.safeParse(response);
   if (!parsedProperties.success) {
     throw new Error(parsedProperties.error.message);
