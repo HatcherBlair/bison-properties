@@ -15,3 +15,9 @@ export const getPropertySchema = z.object({
     id: z.string(),
   }),
 });
+
+export const scanTableSchema = z.array(
+  z.object({
+    property: propertySchema,
+  })
+);
