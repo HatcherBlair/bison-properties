@@ -40,7 +40,7 @@ export default function PicturesCarousel() {
   }
 
   return (
-    <MaxWidthWrapper className="relative px-0 md:px-0">
+    <MaxWidthWrapper className="relative px-0 md:px-0 max-w-max">
       <div className="w-full h-full flex overflow-hidden">
         {images.map((url: string) => {
           return (
