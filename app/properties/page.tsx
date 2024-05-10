@@ -18,16 +18,18 @@ export default async function PropertyPage() {
 
   return (
     <>
-      <MaxWidthWrapper>
+      <MaxWidthWrapper className="min-h-screen">
         <p>Hello From properties</p>
         {userId && <Link href="/properties/new">New Property</Link>}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 justify-center items-center">
+        <div className="pt-10 flex flex-1 justify-evenly md:flex-wrap md:flex-row flex-col gap-1 ">
           {properties.map((property: Property) => (
-            <div className="w-400[px]" key={property.id}>
-              <Link href={`/properties/${property.id}`}>
-                <PropertyCard property={property} />
-              </Link>
-            </div>
+            <Link
+              className="sm:w-full md:w-1/2 lg:w-1/3 xl:w-1/4 aspect-[7/8] -p-3 hover:scale-105 transition-all"
+              key={property.id}
+              href={`/properties/${property.id}`}
+            >
+              <PropertyCard className="w-full h-full" property={property} />
+            </Link>
           ))}
         </div>
       </MaxWidthWrapper>
