@@ -24,7 +24,7 @@ export default async function Home() {
           Bison Properties
         </h1>
       </MaxWidthWrapper>
-      <div className="w-full lg:aspect-[16/4] md:aspect-[16/6] aspect-[16/9] m-0 p-0">
+      <div className="w-full lg:aspect-[16/4] aspect-[16/6] m-0 p-0">
         <PictureCarousel />
       </div>
       <MaxWidthWrapper>
