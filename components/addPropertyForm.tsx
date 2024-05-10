@@ -5,7 +5,11 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { propertySchema } from "@/types/Property";
 import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
+import { v4 as uuidv4 } from "uuid";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import MaxWidthWrapper from "./maxWidthWrapper";
+
 import {
   Form,
   FormControl,
@@ -19,9 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup } from "@radix-ui/react-radio-group";
 import { RadioGroupItem } from "@/components/ui/radio-group";
-import { v4 as uuidv4 } from "uuid";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 export default function PropertyForm({ property }: { property?: Property }) {
   const [pending, setPending] = useState(false);
@@ -74,182 +76,199 @@ export default function PropertyForm({ property }: { property?: Property }) {
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="id"
-          render={({ field }) => (
-            <FormItem className="">
-              <FormLabel>Id</FormLabel>
-              <FormControl>
-                <Input placeholder="" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Name</FormLabel>
-              <FormControl>
-                <Input placeholder="6th South" {...field} />
-              </FormControl>
-              <FormDescription>
-                This is just a nickname for the property, only visible to you
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Property Description</FormLabel>
-              <FormControl>
-                <Textarea {...field} />
-              </FormControl>
-              <FormDescription>
-                Description of the property... Visible to everyone
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="addressLineOne"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Address Line One</FormLabel>
-              <FormControl>
-                <Input placeholder="1332 Colonial Dr." {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="addressLineTwo"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Address Line Two</FormLabel>
-              <FormControl>
-                <Input placeholder="apt. B" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="city"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>City</FormLabel>
-              <FormControl>
-                <Input placeholder="Salt Lake City" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="state"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>State</FormLabel>
-              <FormControl>
-                <Input placeholder="UT" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="zip"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Zip Code</FormLabel>
-              <FormControl>
-                <Input placeholder="84108" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="price"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Rent</FormLabel>
-              <FormControl>
-                <Input type="number" step="0.01" {...field} />
-              </FormControl>
-              <FormDescription>
-                Only Enter Numbers, no $, no /mo or any of that
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="numUnits"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Number Of Units</FormLabel>
-              <FormControl>
-                <Input type="number" {...field} />
-              </FormControl>
-              <FormDescription>Only Integers</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="leased"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Leased?</FormLabel>
-              <FormControl>
-                <RadioGroup onValueChange={field.onChange} defaultValue="true">
-                  <FormItem>
-                    <FormControl>
-                      <RadioGroupItem value="true" />
-                    </FormControl>
-                    <FormLabel>Leased</FormLabel>
-                  </FormItem>
-                  <FormItem>
-                    <FormControl>
-                      <RadioGroupItem value="" />
-                    </FormControl>
-                    <FormLabel>Available</FormLabel>
-                  </FormItem>
-                </RadioGroup>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <Button type="submit" disabled={pending}>
-          Submit
-        </Button>
-        <Button type="button" disabled={pending} onClick={() => history.back()}>
-          Cancel
-        </Button>
-      </form>
-    </Form>
+    <MaxWidthWrapper>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 pt-8">
+          <FormField
+            control={form.control}
+            name="id"
+            render={({ field }) => (
+              <FormItem className="hidden">
+                <FormLabel>Id</FormLabel>
+                <FormControl>
+                  <Input placeholder="" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Name</FormLabel>
+                <FormControl>
+                  <Input placeholder="6th South" {...field} />
+                </FormControl>
+                <FormDescription>
+                  This is just a nickname for the property, only visible to you
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Property Description</FormLabel>
+                <FormControl>
+                  <Textarea className="resize-none" rows={15} {...field} />
+                </FormControl>
+                <FormDescription>
+                  Description of the property... Visible to everyone
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="addressLineOne"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Address Line One</FormLabel>
+                <FormControl>
+                  <Input placeholder="1332 Colonial Dr." {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="addressLineTwo"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Address Line Two</FormLabel>
+                <FormControl>
+                  <Input placeholder="apt. B" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="city"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>City</FormLabel>
+                <FormControl>
+                  <Input placeholder="Salt Lake City" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="state"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>State</FormLabel>
+                <FormControl>
+                  <Input placeholder="UT" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="zip"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Zip Code</FormLabel>
+                <FormControl>
+                  <Input placeholder="84108" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="price"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Rent</FormLabel>
+                <FormControl>
+                  <Input type="number" step="0.01" {...field} />
+                </FormControl>
+                <FormDescription>
+                  Only Enter Numbers, no $, no /mo or any of that
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="numUnits"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Number Of Units</FormLabel>
+                <FormControl>
+                  <Input type="number" {...field} />
+                </FormControl>
+                <FormDescription>Only Integers</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="leased"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Leased?</FormLabel>
+                <FormControl>
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    defaultValue="true"
+                  >
+                    <FormItem>
+                      <FormControl>
+                        <RadioGroupItem value="true" />
+                      </FormControl>
+                      <FormLabel>Leased</FormLabel>
+                    </FormItem>
+                    <FormItem>
+                      <FormControl>
+                        <RadioGroupItem value="" />
+                      </FormControl>
+                      <FormLabel>Available</FormLabel>
+                    </FormItem>
+                  </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="flex justify-evenly pb-10">
+            <Button
+              type="submit"
+              variant="default"
+              size="lg"
+              disabled={pending}
+            >
+              Submit
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              size="lg"
+              disabled={pending}
+              onClick={() => history.back()}
+            >
+              Cancel
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </MaxWidthWrapper>
   );
 }
