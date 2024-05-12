@@ -49,7 +49,7 @@ export default function PicturesCarousel() {
     }, 5000);
 
     return () => clearInterval(intervalId);
-  }, [autoPlay]);
+  }, [autoPlay, showNextImage]);
 
   return (
     <MaxWidthWrapper className="relative px-0 md:px-0 max-w-max">
