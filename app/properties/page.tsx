@@ -6,6 +6,9 @@ import { auth } from "@clerk/nextjs/server";
 import { scanTableSchema } from "@/types/getPropertyValidator";
 import MaxWidthWrapper from "@/components/maxWidthWrapper";
 
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+
 export default async function PropertyPage() {
   const response: any = await scanTable();
   const parsedProperties = scanTableSchema.safeParse(response);
@@ -19,8 +22,15 @@ export default async function PropertyPage() {
   return (
     <>
       <MaxWidthWrapper className="min-h-screen">
-        <p>Hello From properties</p>
-        {userId && <Link href="/properties/new">New Property</Link>}
+        <p className="font-semibold text-5xl text-center pt-5">Properties</p>
+        {userId && (
+          <Link
+            className={cn([buttonVariants({ variant: "outline" })])}
+            href="/properties/new"
+          >
+            Add Property
+          </Link>
+        )}
         <div className="pt-10 flex flex-1 justify-evenly md:flex-wrap md:flex-row flex-col gap-1 ">
           {properties.map((property: Property) => (
             <Link
