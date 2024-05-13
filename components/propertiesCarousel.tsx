@@ -65,7 +65,10 @@ export default async function PropertiesCarousel({
       <CarouselContent>
         {properties.map((property) => {
           return (
-            <CarouselItem className="basis-1/2 lg:basis-1/3 xl:basis-1/5">
+            <CarouselItem
+              className="basis-1/2 lg:basis-1/3 xl:basis-1/5"
+              key={property.id}
+            >
               <Link href={`/properties/${property.id}`}>
                 <SmallCard property={property} />
               </Link>
