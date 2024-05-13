@@ -16,7 +16,7 @@ export default async function DetailPage({
   const property = propertySchema.safeParse(unsafeProperty);
   if (!property.success) {
     console.error(property.error);
-    redirect("/");
+    redirect("/properties");
   }
 
   const [floorPlanUrls, photoUrls, videoUrls] = await getAllURLs(property.data);
