@@ -10,8 +10,8 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export default async function PropertyPage() {
-  const response: any = await scanTable();
-  const parsedProperties = scanTableSchema.safeParse(response);
+  const res: unknown = await scanTable();
+  const parsedProperties = scanTableSchema.safeParse(res);
   if (!parsedProperties.success) {
     throw new Error(parsedProperties.error.message);
   }
