@@ -2,18 +2,14 @@ import { getProperty } from "@/AWSComponents/dynamoActions";
 import { propertySchema } from "@/types/Property";
 import { redirect } from "next/navigation";
 import UpdateImages from "@/components/updateImages";
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { isAdmin } from "@/lib/utils";
 
 export default async function UpdatePhotos({
   params,
 }: {
   params: { id: string };
 }) {
-  const user = await currentUser();
-  const userEmail = user?.primaryEmailAddress?.emailAddress as string;
-  const adminEmails = process.env.NEXT_PUBLIC_ALLOWED_EMAILS?.split(" ");
-
-  if (!(adminEmails && adminEmails.includes(userEmail))) {
+  if (!(await isAdmin())) {
     throw new Error("Must be admin to view this page");
   }
 
