@@ -2,7 +2,7 @@ import { scanTable } from "@/AWSComponents/dynamoActions";
 import { Property } from "@/types/Property";
 import PropertyCard from "@/components/propertyCard";
 import Link from "next/link";
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { scanTableSchema } from "@/types/getPropertyValidator";
 import MaxWidthWrapper from "@/components/maxWidthWrapper";
 
@@ -17,13 +17,15 @@ export default async function PropertyPage() {
   }
   const properties = parsedProperties.data.map((item) => item.property);
 
-  const { userId } = auth();
+  const user = await currentUser();
+  const userEmail = user?.primaryEmailAddress?.emailAddress as string;
+  const adminEmails = process.env.NEXT_PUBLIC_ALLOWED_EMAILS?.split(" ");
 
   return (
     <>
       <MaxWidthWrapper className="min-h-screen">
         <p className="font-semibold text-5xl text-center pt-5">Properties</p>
-        {userId && (
+        {adminEmails && adminEmails.includes(userEmail) && (
           <Link
             className={cn([buttonVariants({ variant: "outline" })])}
             href="/properties/new"
