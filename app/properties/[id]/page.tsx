@@ -5,7 +5,7 @@ import Buttons from "./buttons";
 import { propertySchema } from "@/types/Property";
 import DetailsCarousel from "@/components/detailsCarousel";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { auth } from "@clerk/nextjs/server";
+import { isAdmin } from "@/lib/utils";
 
 export default async function DetailPage({
   params,
@@ -16,16 +16,14 @@ export default async function DetailPage({
   const property = propertySchema.safeParse(unsafeProperty);
   if (!property.success) {
     console.error(property.error);
-    redirect("/");
+    redirect("/properties");
   }
 
   const [floorPlanUrls, photoUrls, videoUrls] = await getAllURLs(property.data);
 
-  const { userId } = auth();
-
   return (
     <section className="flex flex-col items-center justify-center">
-      {userId && <Buttons id={property.data.id} />}
+      {(await isAdmin()) && <Buttons id={property.data.id} />}
       <h1>Property Name: {property.data.name}</h1>
       <Tabs defaultValue="photos" className="w-[800px]">
         <TabsList className="grid w-full grid-cols-3">

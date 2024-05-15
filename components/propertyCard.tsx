@@ -23,7 +23,13 @@ export default async function PropertyCard({
     ? await getURL(`${property.id}/${property.photos?.at(0)?.Key}`)
     : null;
   return (
-    <Card className={cn("w-[400px]", className)} {...props}>
+    <Card
+      className={cn(
+        "box-border flex flex-col text-center items-center",
+        className
+      )}
+      {...props}
+    >
       <CardHeader>
         <CardTitle>
           {property.addressLineOne} {property.addressLineTwo}
@@ -34,7 +40,11 @@ export default async function PropertyCard({
       </CardHeader>
       <CardContent>
         {coverPhoto ? (
-          <img className="w-[50px] h-auto object-cover" src={coverPhoto} />
+          <img
+            className="w-2/3 rounded-sm mx-auto h-auto object-cover"
+            src={coverPhoto}
+            alt={`${property.addressLineOne} cover photo`}
+          />
         ) : (
           <div>No photo</div>
         )}

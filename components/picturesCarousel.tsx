@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowBigLeft, ArrowBigRight, Circle, CircleDot } from "lucide-react";
 import MaxWidthWrapper from "./maxWidthWrapper";
 import styles from "@/styles/imageCarousel.module.css";
@@ -18,6 +18,8 @@ export default function PicturesCarousel() {
   ];
 
   const [imageIndex, setImageIndex] = useState(0);
+  // Auto play is disabled once the user interacts with a button
+  const [autoPlay, setAutoPlay] = useState(true);
 
   function showNextImage() {
     setImageIndex((index) => {
@@ -39,8 +41,18 @@ export default function PicturesCarousel() {
     });
   }
 
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (autoPlay) {
+        showNextImage();
+      }
+    }, 5000);
+
+    return () => clearInterval(intervalId);
+  }, [autoPlay]);
+
   return (
-    <MaxWidthWrapper className="relative px-0 md:px-0">
+    <MaxWidthWrapper className="relative px-0 md:px-0 max-w-max">
       <div className="w-full h-full flex overflow-hidden">
         {images.map((url: string) => {
           return (
@@ -54,14 +66,20 @@ export default function PicturesCarousel() {
         })}
       </div>
       <button
-        onClick={showPrevImage}
+        onClick={() => {
+          showPrevImage();
+          setAutoPlay(false);
+        }}
         className={styles.Btn}
         style={{ left: "0" }}
       >
         <ArrowBigLeft />
       </button>
       <button
-        onClick={showNextImage}
+        onClick={() => {
+          showNextImage();
+          setAutoPlay(false);
+        }}
         className={styles.Btn}
         style={{ right: "0" }}
       >
@@ -72,7 +90,10 @@ export default function PicturesCarousel() {
           return (
             <button
               className={styles.dotBtn}
-              onClick={() => setImageIndex(index)}
+              onClick={() => {
+                setImageIndex(index);
+                setAutoPlay(false);
+              }}
               key={index}
             >
               {index === imageIndex ? <CircleDot /> : <Circle />}
