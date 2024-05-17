@@ -11,13 +11,6 @@ import { deleteFile } from "./s3Actions";
 import { getPropertySchema } from "@/types/getPropertyValidator";
 import { revalidatePath } from "next/cache";
 
-// TODO: GetCommand for fetching one record
-// TODO: PutCommand for updating/adding record
-// TODO: ScanCommand for fetching all records
-// TODO: QueryCommand for custom sorting maybe?
-
-// Add or update property information
-// If the property already exists, the information will be overwritten
 export async function putProperty(property: Property) {
   const command = new PutCommand({
     TableName: "test-table",
@@ -36,9 +29,6 @@ export async function putProperty(property: Property) {
   revalidatePath("/properties");
 }
 
-// Gets a single property from the table
-// TODO: Handle error fetching property
-// TODO: Use Zod to check status code
 export async function getProperty(id: string) {
   const command = new GetCommand({
     TableName: "test-table",
@@ -54,11 +44,9 @@ export async function getProperty(id: string) {
     : undefined;
 }
 
-// Delete a property from the table
 export async function deleteProperty(id: string) {
   // Delete photos from bucket before deleting property
   const property = await getProperty(id);
-  // TODO: Maybe check if files are deleted instead just firing all these requests willy nilly
   if (property?.photos) {
     property.photos.forEach((file) => deleteFile(`${id}/${file.Key}`));
   }
@@ -82,7 +70,6 @@ export async function deleteProperty(id: string) {
   return response;
 }
 
-// Returns all records in table
 export async function scanTable() {
   const command = new ScanCommand({
     TableName: "test-table",

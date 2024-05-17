@@ -14,7 +14,6 @@ import { Property, s3Object } from "@/types/Property";
 import { revalidatePath } from "next/cache";
 
 // Uploads files to S3: returns the key for the file, if the key is Error the file was not able to be uploaded
-// TODO: Add proper error handling
 export async function handleFileUpload(data: FormData, propertyKey: string) {
   const keys = await Promise.all(
     Array.from(data.entries()).map(async ([key, value]) => {
@@ -47,7 +46,6 @@ export async function handleFileUpload(data: FormData, propertyKey: string) {
 }
 
 // Fetch specified number of images from S3 Bucket
-// TODO: Add prefix for homepage files
 export async function fetchFiles(numItems: number) {
   const files = await s3Client.send(
     new ListObjectsCommand({
@@ -75,7 +73,6 @@ export async function fetchFiles(numItems: number) {
 
 // Generates a presigned URL with given key
 export async function getURL(key: string): Promise<string> {
-  //console.log(key);
   const response = await getSignedUrl(
     s3Client,
     new GetObjectCommand({
@@ -84,7 +81,6 @@ export async function getURL(key: string): Promise<string> {
     }),
     { expiresIn: 60 * 60 * 1 }
   ); // Default expiration 90s
-  //console.log(response);
   return response;
 }
 
