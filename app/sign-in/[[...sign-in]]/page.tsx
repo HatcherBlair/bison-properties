@@ -1,5 +1,10 @@
+import MaxWidthWrapper from "@/components/maxWidthWrapper";
 import { SignIn } from "@clerk/nextjs";
 
 export default function Page() {
-  return <SignIn path="/sign-in" />;
+  return (
+    <MaxWidthWrapper>
+      <SignIn path="/sign-in" />
+    </MaxWidthWrapper>
+  );
 }

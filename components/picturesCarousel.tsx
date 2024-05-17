@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { ArrowBigLeft, ArrowBigRight, Circle, CircleDot } from "lucide-react";
 import MaxWidthWrapper from "./maxWidthWrapper";
 import styles from "@/styles/imageCarousel.module.css";
-import { Button } from "./ui/button";
 
 export default function PicturesCarousel() {
   // Temp for testing purposes

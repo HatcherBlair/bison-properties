@@ -1,15 +1,11 @@
 "use client";
 import { Property } from "@/types/Property";
-//import UpdateCaptions from "./editPhotoList";
 import FileUpload from "./fileUploadForm";
 import { useState, useEffect } from "react";
 import { getAllURLs } from "@/AWSComponents/s3Actions";
 import Image from "next/image";
 
 export default function UpdateImages({ property }: { property: Property }) {
-  // Form for updating captions
-  // Display all photos in a card with caption input below
-  // submit button update all 3 sets
   return (
     <div>
       <UpdateCaptions property={property} />

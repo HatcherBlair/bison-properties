@@ -1,10 +1,4 @@
-import {
-  SignInButton,
-  SignedIn,
-  SignedOut,
-  SignOutButton,
-  UserButton,
-} from "@clerk/nextjs";
+import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { ModeToggle } from "./themeButton";
 import MaxWidthWrapper from "./maxWidthWrapper";
