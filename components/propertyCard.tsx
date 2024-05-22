@@ -25,7 +25,7 @@ export default async function PropertyCard({
   return (
     <Card
       className={cn(
-        "box-border flex flex-col text-center items-center",
+        "box-border flex flex-col text-center items-center bg-slate-300",
         className
       )}
       {...props}
