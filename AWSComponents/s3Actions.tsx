@@ -10,7 +10,7 @@ import {
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { s3Client } from "@/AWSComponents/s3Client";
 import { v4 as uuidV4 } from "uuid";
-import { Property, s3Object } from "@/types/Property";
+import { Property, s3Object, s3ObjectSchema } from "@/types/Property";
 import { revalidatePath } from "next/cache";
 
 // Uploads files to S3: returns the key for the file, if the key is Error the file was not able to be uploaded
@@ -79,7 +79,7 @@ export async function getURL(key: string): Promise<string> {
       Bucket: process.env.BUCKET_NAME as string,
       Key: key,
     }),
-    { expiresIn: 60 * 60 * 1 }
+    { expiresIn: 60 * 60 * 1 } // 1hr
   ); // Default expiration 90s
   return response;
 }
@@ -97,33 +97,14 @@ export async function putURL(key: string): Promise<string> {
   return response;
 }
 
-// Returns all of the urls for a property
-export async function getAllURLs(property: Property) {
-  const floorPlanUrls = property.floorPlan
-    ? await Promise.all(
-        property.floorPlan.map(async (item: s3Object) => {
-          return await getURL(`${property.id}/${item.Key}`);
-        })
-      )
-    : [];
-
-  const photosUrls = property.photos
-    ? await Promise.all(
-        property.photos.map(async (item: s3Object) => {
-          return await getURL(`${property.id}/${item.Key}`);
-        })
-      )
-    : [];
-
-  const videosUrls = property.videos
-    ? await Promise.all(
-        property.videos.map(async (item: s3Object) => {
-          return await getURL(`${property.id}/${item.Key}`);
-        })
-      )
-    : [];
-
-  return [floorPlanUrls, photosUrls, videosUrls];
+// Returns all the urls for objects in a given folder
+export async function getAllURLs(objects: s3Object[], folder: string) {
+  const urls = await Promise.all(
+    objects.map(async (object) => {
+      return await getURL(`${folder}/${object.Key}`);
+    })
+  );
+  return urls;
 }
 
 export async function deleteFile(path: string) {

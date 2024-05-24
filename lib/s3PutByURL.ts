@@ -17,9 +17,7 @@ export function s3PutByURL(
             message: xhr.statusText,
           });
         } else {
-          rej({
-            message: xhr.statusText,
-          });
+          rej(file.name);
         }
       }
     };
