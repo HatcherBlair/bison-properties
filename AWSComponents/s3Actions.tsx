@@ -71,7 +71,7 @@ export async function fetchFiles(numItems: number) {
   return urls;
 }
 
-// Generates a presigned URL with given key
+// Generates a presigned GET URL with given key
 export async function getURL(key: string): Promise<string> {
   const response = await getSignedUrl(
     s3Client,
@@ -81,6 +81,19 @@ export async function getURL(key: string): Promise<string> {
     }),
     { expiresIn: 60 * 60 * 1 }
   ); // Default expiration 90s
+  return response;
+}
+
+// Generates a presigned PUT URL with a given key
+export async function putURL(key: string): Promise<string> {
+  const response = await getSignedUrl(
+    s3Client,
+    new PutObjectCommand({
+      Bucket: process.env.BUCKET_NAME as string,
+      Key: key,
+    }),
+    { expiresIn: 60 * 60 * 1 }
+  );
   return response;
 }
 

@@ -4,12 +4,14 @@ import FileUpload from "./fileUploadForm";
 import { useState, useEffect } from "react";
 import { getAllURLs } from "@/AWSComponents/s3Actions";
 import Image from "next/image";
+import { FileDropzone } from "./fileDropzone";
+import { Input } from "./ui/input";
 
 export default function UpdateImages({ property }: { property: Property }) {
   return (
     <div>
       <UpdateCaptions property={property} />
-      <FileUpload property={property} type="floorPlan" />
+      <FileDropzone property={property} />
       <FileUpload property={property} type="videos" />
       <FileUpload property={property} type="photos" />
     </div>
@@ -42,15 +44,20 @@ function UpdateCaptions({ property }: { property: Property }) {
     <div>
       <div>
         Photos...
-        {photoURLS.length ? (
-          photoURLS.map((url) => {
-            return (
-              <Image key={url} width={250} height={200} alt="image" src={url} />
-            );
-          })
-        ) : (
-          <p>No Photos</p>
-        )}
+        <div className="flex flex-wrap gap-2">
+          {photoURLS.length ? (
+            photoURLS.map((url, i) => {
+              return (
+                <div key={i}>
+                  <Image width={250} height={141} alt="image" src={url} />
+                  <Input type="text" />
+                </div>
+              );
+            })
+          ) : (
+            <p>No Photos</p>
+          )}
+        </div>
       </div>
       <div>
         Videos...
