@@ -1,7 +1,6 @@
 "use client";
-import { Property, s3Object } from "@/types/Property";
-import FileUpload from "./fileUploadForm";
-import { useState, useEffect, ChangeEvent } from "react";
+import { type Property, type s3Object } from "@/types/Property";
+import { useState, useEffect, type ChangeEvent } from "react";
 import { getAllURLs } from "@/AWSComponents/s3Actions";
 import Image from "next/image";
 import { FileDropzone } from "./fileDropzone";
@@ -80,7 +79,8 @@ export default function UpdateImages({ property }: { property: Property }) {
         newFloorPlan[i] = { ...newFloorPlan[i], caption: e.target.value };
         setFloorPlan(newFloorPlan);
         break;
-        defualt: break;
+      default:
+        break;
     }
   }
 
@@ -99,8 +99,11 @@ export default function UpdateImages({ property }: { property: Property }) {
         callback={onCaptionChange}
       />
       <FileDropzone property={property} />
-      <FileUpload property={property} type="videos" />
-      <FileUpload property={property} type="photos" />
+
+      <h3 className="text-xl px-8 pb-1 border-b-2 border-black">Videos</h3>
+      <FileDropzone property={property} />
+      <h3 className="text-xl px-8 pb-1 border-b-2 border-black">Floorplan</h3>
+      <FileDropzone property={property} />
     </div>
   );
 }
