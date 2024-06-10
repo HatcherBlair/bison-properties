@@ -36,7 +36,7 @@ export default async function DetailPage({
     <MaxWidthWrapper>
       <section className="flex flex-col items-center justify-center">
         {(await isAdmin()) && <Buttons id={property.data.id} />}
-        <Tabs defaultValue="photos" className="w-[800px]">
+        {/* <Tabs defaultValue="photos" className="w-[800px]">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="photos">Photos</TabsTrigger>
             <TabsTrigger value="videos">Videos</TabsTrigger>
@@ -63,7 +63,14 @@ export default async function DetailPage({
               <div>No Floor Plan</div>
             )}
           </TabsContent>
-        </Tabs>
+        </Tabs> */}
+        <MaxWidthWrapper>
+          {photoUrls.length ? (
+            <DetailsCarousel urls={photoUrls} />
+          ) : (
+            <div>No Photos</div>
+          )}
+        </MaxWidthWrapper>
         <h3>
           {property.data.leased ? "Leased" : "Available"} |{" "}
           {property.data.price.toLocaleString("en-US", {
