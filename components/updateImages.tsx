@@ -5,6 +5,8 @@ import { getAllURLs } from "@/AWSComponents/s3Actions";
 import Image from "next/image";
 import { FileDropzone } from "./fileDropzone";
 import { Input } from "./ui/input";
+import { Button } from "./ui/button";
+import { putProperty } from "@/AWSComponents/dynamoActions";
 
 interface s3WithUrl extends s3Object {
   url: string;
@@ -12,7 +14,7 @@ interface s3WithUrl extends s3Object {
 
 export default function UpdateImages({ property }: { property: Property }) {
   const [loading, setLoading] = useState(true);
-  const [floorPlan, setFloorPlan] = useState<s3WithUrl[]>([]);
+  const [floorPlans, setFloorPlans] = useState<s3WithUrl[]>([]);
   const [photos, setPhotos] = useState<s3WithUrl[]>([]);
   const [videos, setvideos] = useState<s3WithUrl[]>([]);
 
@@ -32,7 +34,7 @@ export default function UpdateImages({ property }: { property: Property }) {
       }
       if (property.floorPlan) {
         const fpURLS = await getAllURLs(property.floorPlan, property.id);
-        setFloorPlan(
+        setFloorPlans(
           property.floorPlan.map((fp, i) => {
             return {
               ...fp,
@@ -77,11 +79,30 @@ export default function UpdateImages({ property }: { property: Property }) {
       case "floorPlan":
         const newFloorPlan = [...videos];
         newFloorPlan[i] = { ...newFloorPlan[i], caption: e.target.value };
-        setFloorPlan(newFloorPlan);
+        setFloorPlans(newFloorPlan);
         break;
       default:
         break;
     }
+  }
+
+  async function saveCaptions() {
+    const newPhotos = photos.map((photo) => {
+      return { caption: photo.caption, Key: photo.Key };
+    });
+    const newVideos = videos.map((video) => {
+      return { caption: video.caption, Key: video.Key };
+    });
+    const newFloorPlans = floorPlans.map((floorPlan) => {
+      return { caption: floorPlan.caption, Key: floorPlan.Key };
+    });
+    const newProperty = {
+      ...property,
+      photos: newPhotos,
+      videos: newVideos,
+      floorPlans: newFloorPlans,
+    };
+    await putProperty(newProperty);
   }
 
   return (
@@ -98,6 +119,9 @@ export default function UpdateImages({ property }: { property: Property }) {
         type="photos"
         callback={onCaptionChange}
       />
+      <Button onClick={saveCaptions} type="button">
+        Save Captions
+      </Button>
       <FileDropzone property={property} />
 
       <h3 className="text-xl px-8 pb-1 border-b-2 border-black">Videos</h3>

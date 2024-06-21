@@ -1,7 +1,6 @@
 import PictureCarousel from "@/components/picturesCarousel";
 import About from "@/components/aboutSection";
 import MaxWidthWrapper from "@/components/maxWidthWrapper";
-import { FileDropzone } from "@/components/fileDropzone";
 
 export default async function Home() {
   return (
