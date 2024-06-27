@@ -3,7 +3,7 @@ import { SignIn } from "@clerk/nextjs";
 
 export default function Page() {
   return (
-    <MaxWidthWrapper>
+    <MaxWidthWrapper className="flex justify-center pt-10">
       <SignIn path="/sign-in" />
     </MaxWidthWrapper>
   );

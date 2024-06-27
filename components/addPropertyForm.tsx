@@ -33,16 +33,18 @@ export default function PropertyForm({ property }: { property?: Property }) {
     resolver: zodResolver(propertySchema),
     defaultValues: {
       id: property?.id || uuidv4(),
-      name: property?.name || "",
-      description: property?.description || "",
-      leased: property?.leased || true,
-      price: property?.price || 0.0,
-      numUnits: property?.numUnits || 1,
-      addressLineOne: property?.addressLineOne || "",
-      addressLineTwo: property?.addressLineTwo || "",
-      city: property?.city || "Salt Lake City",
-      state: property?.state || "UT",
-      zip: property?.zip || "",
+      description: property?.description,
+      sqFt: property?.sqFt,
+      beds: property?.beds,
+      baths: property?.baths,
+      leased: property?.leased,
+      price: property?.price,
+      numUnits: property?.numUnits,
+      addressLineOne: property?.addressLineOne,
+      addressLineTwo: property?.addressLineTwo,
+      city: property?.city,
+      state: property?.state,
+      zip: property?.zip,
     },
   });
 
@@ -52,8 +54,10 @@ export default function PropertyForm({ property }: { property?: Property }) {
     try {
       const submittedProperty: Property = {
         id: values.id,
-        name: values.name,
         description: values.description,
+        sqFt: values.sqFt,
+        beds: values.beds,
+        baths: values.baths,
         price: values.price,
         leased: values.leased,
         numUnits: values.numUnits,
@@ -77,6 +81,9 @@ export default function PropertyForm({ property }: { property?: Property }) {
 
   return (
     <MaxWidthWrapper>
+      <h3 className="text-4xl text-center pt-5">
+        {property ? "Edit Property" : "Create new Property"}
+      </h3>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 pt-8">
           <FormField
@@ -88,38 +95,6 @@ export default function PropertyForm({ property }: { property?: Property }) {
                 <FormControl>
                   <Input placeholder="" {...field} />
                 </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="6th South" {...field} />
-                </FormControl>
-                <FormDescription>
-                  This is just a nickname for the property, only visible to you
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Property Description</FormLabel>
-                <FormControl>
-                  <Textarea className="resize-none" rows={15} {...field} />
-                </FormControl>
-                <FormDescription>
-                  Description of the property... Visible to everyone
-                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -189,6 +164,62 @@ export default function PropertyForm({ property }: { property?: Property }) {
               </FormItem>
             )}
           />
+          <FormField
+            control={form.control}
+            name="beds"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Beds</FormLabel>
+                <FormControl>
+                  <Input type="number" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="baths"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Baths</FormLabel>
+                <FormControl>
+                  <Input type="number" step="0.5" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="sqFt"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>SqFt</FormLabel>
+                <FormControl>
+                  <Input type="number" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Property Description</FormLabel>
+                <FormControl>
+                  <Textarea className="resize-none" rows={15} {...field} />
+                </FormControl>
+                <FormDescription>
+                  Description of the property... Visible to everyone
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <FormField
             control={form.control}
             name="price"

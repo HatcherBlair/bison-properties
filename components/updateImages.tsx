@@ -1,81 +1,169 @@
 "use client";
-import { Property } from "@/types/Property";
-import FileUpload from "./fileUploadForm";
-import { useState, useEffect } from "react";
+import { type Property, type s3Object } from "@/types/Property";
+import { useState, useEffect, type ChangeEvent } from "react";
 import { getAllURLs } from "@/AWSComponents/s3Actions";
 import Image from "next/image";
+import { FileDropzone } from "./fileDropzone";
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
+import { putProperty } from "@/AWSComponents/dynamoActions";
 
-export default function UpdateImages({ property }: { property: Property }) {
-  return (
-    <div>
-      <UpdateCaptions property={property} />
-      <FileUpload property={property} type="floorPlan" />
-      <FileUpload property={property} type="videos" />
-      <FileUpload property={property} type="photos" />
-    </div>
-  );
+interface s3WithUrl extends s3Object {
+  url: string;
 }
 
-function UpdateCaptions({ property }: { property: Property }) {
+export default function UpdateImages({ property }: { property: Property }) {
   const [loading, setLoading] = useState(true);
-  const [floorPlanURLS, setFloorPlanURLS] = useState<string[]>([]);
-  const [photoURLS, setPhotoURLS] = useState<string[]>([]);
-  const [videoURLS, setVideoURLS] = useState<string[]>([]);
+  const [floorPlans, setFloorPlans] = useState<s3WithUrl[]>([]);
+  const [photos, setPhotos] = useState<s3WithUrl[]>([]);
+  const [videos, setvideos] = useState<s3WithUrl[]>([]);
 
+  // Store starting images and captions in local state
   useEffect(() => {
     async function getUrls() {
-      const [fp, ph, vid] = await getAllURLs(property);
-      setFloorPlanURLS(fp);
-      setPhotoURLS(ph);
-      setVideoURLS(vid);
+      if (property.photos) {
+        const phURLS = await getAllURLs(property.photos, property.id);
+        setPhotos(
+          property.photos.map((ph, i) => {
+            return {
+              ...ph,
+              url: phURLS[i],
+            };
+          })
+        );
+      }
+      if (property.floorPlan) {
+        const fpURLS = await getAllURLs(property.floorPlan, property.id);
+        setFloorPlans(
+          property.floorPlan.map((fp, i) => {
+            return {
+              ...fp,
+              url: fpURLS[i],
+            };
+          })
+        );
+      }
+      if (property.videos) {
+        const vidURLS = await getAllURLs(property.videos, property.id);
+        setvideos(
+          property.videos.map((vid, i) => {
+            return {
+              ...vid,
+              url: vidURLS[i],
+            };
+          })
+        );
+      }
       setLoading(false);
     }
 
     getUrls();
   }, [property]);
 
-  if (loading) {
-    return <div>Loading photos... Please bear with us</div>;
+  function onCaptionChange(
+    i: number,
+    type: string,
+    e: ChangeEvent<HTMLInputElement>
+  ) {
+    switch (type) {
+      case "photos":
+        const newPhotos = [...photos];
+        newPhotos[i] = { ...newPhotos[i], caption: e.target.value };
+        setPhotos(newPhotos);
+        break;
+      case "videos":
+        const newVideos = [...videos];
+        newVideos[i] = { ...newVideos[i], caption: e.target.value };
+        setvideos(newVideos);
+        break;
+      case "floorPlan":
+        const newFloorPlan = [...videos];
+        newFloorPlan[i] = { ...newFloorPlan[i], caption: e.target.value };
+        setFloorPlans(newFloorPlan);
+        break;
+      default:
+        break;
+    }
+  }
+
+  async function saveCaptions() {
+    const newPhotos = photos.map((photo) => {
+      return { caption: photo.caption, Key: photo.Key };
+    });
+    const newVideos = videos.map((video) => {
+      return { caption: video.caption, Key: video.Key };
+    });
+    const newFloorPlans = floorPlans.map((floorPlan) => {
+      return { caption: floorPlan.caption, Key: floorPlan.Key };
+    });
+    const newProperty = {
+      ...property,
+      photos: newPhotos,
+      videos: newVideos,
+      floorPlans: newFloorPlans,
+    };
+    await putProperty(newProperty);
   }
 
   return (
     <div>
-      <div>
-        Photos...
-        {photoURLS.length ? (
-          photoURLS.map((url) => {
-            return (
-              <Image key={url} width={250} height={200} alt="image" src={url} />
-            );
-          })
-        ) : (
-          <p>No Photos</p>
-        )}
-      </div>
-      <div>
-        Videos...
-        {videoURLS.length ? (
-          videoURLS.map((url) => {
-            return (
-              <Image key={url} width={250} height={200} alt="image" src={url} />
-            );
-          })
-        ) : (
-          <p>No Videos</p>
-        )}
-      </div>
-      <div>
-        Floor Plans...
-        {floorPlanURLS.length ? (
-          floorPlanURLS.map((url) => {
-            return (
-              <Image key={url} width={250} height={200} alt="image" src={url} />
-            );
-          })
-        ) : (
-          <p>No Floor Plans</p>
-        )}
-      </div>
+      <h4 className="text-center text-red-500 text-xl font-semibold pb-4">
+        Warning... Pictures are rendered in low quality on this page. The images
+        on this page do not reflect the quality of the rest of the images on
+        this site
+      </h4>
+
+      <h3 className="text-xl px-8 pb-1 border-b-2 border-black">Photos</h3>
+      <RenderImages
+        objectsToRender={photos}
+        type="photos"
+        callback={onCaptionChange}
+      />
+      <Button onClick={saveCaptions} type="button">
+        Save Captions
+      </Button>
+      <FileDropzone property={property} />
+
+      <h3 className="text-xl px-8 pb-1 border-b-2 border-black">Videos</h3>
+      <FileDropzone property={property} />
+      <h3 className="text-xl px-8 pb-1 border-b-2 border-black">Floorplan</h3>
+      <FileDropzone property={property} />
+    </div>
+  );
+}
+
+function RenderImages({
+  objectsToRender,
+  type,
+  callback,
+}: {
+  objectsToRender: s3WithUrl[];
+  type: string;
+  callback: (i: number, tpye: string, e: ChangeEvent<HTMLInputElement>) => void;
+}) {
+  return (
+    <div className="flex flex-wrap gap-2 p-4">
+      {objectsToRender.map((object, i) => {
+        return (
+          <div key={i} className="flex flex-col gap-1">
+            <div className="w-[250px] h-[141px] relative">
+              <Image
+                fill={true}
+                alt="image"
+                src={object.url}
+                sizes="(max-width: 640px) 50vw, (max-width: 830px) 33vw, (max-wdith: 1100px) 25vw, 20vw"
+                quality={25}
+              />{" "}
+            </div>
+            <Input
+              type="text"
+              value={object.caption ?? ""}
+              onChange={(e) => callback(i, type, e)}
+              className="bg-slate-300 border-black/20"
+            />
+          </div>
+        );
+      })}
     </div>
   );
 }

@@ -25,40 +25,42 @@ export default async function PropertyCard({
   return (
     <Card
       className={cn(
-        "box-border flex flex-col text-center items-center",
+        "box-border flex flex-col text-center items-center bg-slate-300",
         className
       )}
       {...props}
     >
-      <CardHeader>
+      <CardHeader className="m-0 p-0 pb-2">
         <CardTitle>
-          {property.addressLineOne} {property.addressLineTwo}
+          {coverPhoto ? (
+            <img
+              className="w-full rounded-sm  m-0 h-auto "
+              src={coverPhoto}
+              alt={`${property.addressLineOne} cover photo`}
+            />
+          ) : (
+            <div>No photo</div>
+          )}
         </CardTitle>
-        <CardDescription>
-          {property.city}, {property.state} {property.zip}
-        </CardDescription>
       </CardHeader>
       <CardContent>
-        {coverPhoto ? (
-          <img
-            className="w-2/3 rounded-sm mx-auto h-auto object-cover"
-            src={coverPhoto}
-            alt={`${property.addressLineOne} cover photo`}
-          />
-        ) : (
-          <div>No photo</div>
-        )}
+        <p className="font-semibold text-xl">
+          {property.addressLineOne} {property.addressLineTwo}
+        </p>
+        <p className="font-semibold text-xl">
+          {property.city}, {property.state} {property.zip}
+        </p>
+        <p className="font-semibold text-lg">
+          {property.leased ? "Leased" : "Available"} |
+          {property.price.toLocaleString("en-US", {
+            style: "currency",
+            currency: "USD",
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}{" "}
+          /mo
+        </p>
       </CardContent>
-      <CardFooter>
-        {property.leased ? "Leased" : "Available"} |
-        {property.price.toLocaleString("en-US", {
-          style: "currency",
-          currency: "USD",
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        })}{" "}
-        /mo
-      </CardFooter>
     </Card>
   );
 }

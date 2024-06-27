@@ -4,7 +4,6 @@ import { Inter as FontSans } from "next/font/google";
 import { cn } from "@/lib/utils";
 import NavBar from "@/components/navbar";
 import { ClerkProvider } from "@clerk/nextjs";
-import { ThemeProvider } from "@/components/themeProvider";
 
 export const metadata: Metadata = {
   title: "Bison Properties",
@@ -31,15 +30,8 @@ export default function RootLayout({
             fontSans.variable
           )}
         >
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <NavBar />
-            {children}
-          </ThemeProvider>
+          <NavBar />
+          {children}
         </body>
       </html>
     </ClerkProvider>

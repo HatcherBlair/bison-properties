@@ -7,11 +7,13 @@ export const s3ObjectSchema = z.object({
 
 export const propertySchema = z.object({
   id: z.string(),
-  name: z.string().min(2).max(50),
   description: z.string().min(2),
   price: z.coerce.number(),
   leased: z.coerce.boolean(),
   numUnits: z.coerce.number().int(),
+  sqFt: z.coerce.number().int().optional(),
+  beds: z.coerce.number().int().optional(),
+  baths: z.coerce.number().optional(),
   addressLineOne: z.string(),
   addressLineTwo: z.string().optional(),
   city: z.string(),
