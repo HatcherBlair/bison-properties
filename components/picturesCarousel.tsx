@@ -4,18 +4,7 @@ import { ArrowBigLeft, ArrowBigRight, Circle, CircleDot } from "lucide-react";
 import MaxWidthWrapper from "./maxWidthWrapper";
 import styles from "@/styles/imageCarousel.module.css";
 
-export default function PicturesCarousel() {
-  // Temp for testing purposes
-  // TODO: pass images in with props and allow for admin to upload images for this slider
-  const images = [
-    "/SLC1.jpeg",
-    "/SLC2.jpeg",
-    "/SLC3.jpeg",
-    "/SLC4.jpeg",
-    "/SLC5.jpeg",
-    "/SLC6.jpeg",
-  ];
-
+export default function PicturesCarousel({ images }: { images: string[] }) {
   const [imageIndex, setImageIndex] = useState(0);
   // Auto play is disabled once the user interacts with a button
   const [autoPlay, setAutoPlay] = useState(true);

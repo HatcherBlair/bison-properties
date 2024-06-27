@@ -11,6 +11,7 @@ import { FileUploadWithProgress } from "./fileUploadWithProgress";
 import { s3PutByURL } from "@/lib/s3PutByURL";
 import { FileWrapper } from "@/types/fileWrapper";
 import { putProperty } from "@/AWSComponents/dynamoActions";
+import { revalidatePath } from "next/cache";
 
 export function FileDropzone({ property }: { property?: Property }) {
   const [isDragOver, setIsDragOver] = useState(false);
@@ -62,7 +63,7 @@ export function FileDropzone({ property }: { property?: Property }) {
       files.map(async (f) => {
         let key: string;
         if (!property) {
-          key = "homepage";
+          key = `homepage/${f.uuid}`;
         } else {
           key = `${property.id}/${f.uuid}`;
         }
@@ -102,7 +103,6 @@ export function FileDropzone({ property }: { property?: Property }) {
 
     const filteredFiles = newFiles.filter((file) => typeof file === undefined);
     setFiles(filteredFiles as FileWrapper[]);
-
     setIsUploading(false);
   }
 
