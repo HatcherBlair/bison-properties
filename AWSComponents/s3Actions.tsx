@@ -45,12 +45,12 @@ export async function handleFileUpload(data: FormData, propertyKey: string) {
   return keys;
 }
 
-// Fetch specified number of images from S3 Bucket
-export async function fetchFiles(numItems: number) {
+// Fetch files for homepage
+export async function fetchFiles() {
   const files = await s3Client.send(
     new ListObjectsCommand({
       Bucket: process.env.BUCKET_NAME,
-      MaxKeys: 5,
+      Prefix: "homepage/",
     })
   );
 
@@ -59,7 +59,7 @@ export async function fetchFiles(numItems: number) {
     return [];
   }
 
-  let urls = await Promise.all(
+  const urls = await Promise.all(
     files.Contents.map((file) => {
       if (!file.Key) {
         return;
@@ -68,7 +68,9 @@ export async function fetchFiles(numItems: number) {
     }).filter(Boolean) // Remove undefined values
   );
 
-  return urls;
+  const keys = files.Contents.map((file) => file.Key);
+
+  return [keys, urls];
 }
 
 // Generates a presigned GET URL with given key
@@ -115,7 +117,7 @@ export async function deleteFile(path: string) {
 
   try {
     const response = await s3Client.send(command);
-    console.log(response);
+    return response;
   } catch (e) {
     console.error(e);
   }
